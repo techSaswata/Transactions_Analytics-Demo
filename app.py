@@ -210,9 +210,10 @@ st.set_page_config(
 
 st.title("InsightX: Conversational Payments Analytics")
 st.caption(
-    "Ask natural language questions about the digital payments dataset. "
-    "Behind the scenes, LangChain + Gemini plan tasks, run SQL over the dataset, "
-    "and generate explainable insights."
+    "Ask natural language questions on top of the digital payments dataset. "
+    "Behind the scenes, a LangChain-driven orchestration layer decomposes your prompt into analysis tasks, "
+    "generates SQL over a DuckDB-backed `transactions` table, aggregates the results into a unified JSON contract, "
+    "and then renders explainable insights (e.g. *Which hours of the day have the highest P2P transaction count and highest total P2P value, and how do their failure rates compare?*)"
 )
 
 
@@ -242,10 +243,10 @@ with st.sidebar:
         """
     )
 
-user_question = st.text_area(
-    "Ask a question about the transactions (e.g. *Which transaction type has the highest failure rate?*)",
-    height=100,
-)
+# user_question = st.text_area(
+#     "Ask a question about the transactions ",
+#     height=100,
+# )
 
 if st.button("Run analysis") and user_question.strip():
     with st.spinner("Thinking with Gemini, planning tasks, and running SQL..."):
@@ -263,7 +264,7 @@ if st.button("Run analysis") and user_question.strip():
     col_left, col_right = st.columns([2, 1])
 
     with col_left:
-        st.subheader("Natural language insight")
+        st.subheader("Leadership insight console")
         # Render markdown as-is, similar to GitHub's markdown rendering
         if not isinstance(answer, str):
             answer = str(answer)
