@@ -203,8 +203,8 @@ def _render_task_chart(df: pd.DataFrame, task_name: str):
     st.info("Could not infer a meaningful chart for this task; showing table only.")
 
 st.set_page_config(
-    page_title="InsightX Conversational Analytics",
-    page_icon="📊",
+    page_title="InsightX Conversational Analytics Agent",
+    page_icon="🔍",
     layout="wide",
 )
 
@@ -218,11 +218,9 @@ st.caption(
 
 
 with st.sidebar:
-    st.header("About")
+    st.header("Pipeline:")
     st.markdown(
         """
-        **Pipeline**:
-
         1. User prompt + `schema` → **LangChain-powered LLM Task Planner**  
            A LangChain `PromptTemplate` + `ChatGoogleGenerativeAI` chain conditions the LLM on the natural-language question and the full dataset schema, and materializes an explicit *task graph* of analytical intents (each with `task_name`, `task_description`, and a targeted objective).
 
