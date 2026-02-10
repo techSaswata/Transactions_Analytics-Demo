@@ -242,21 +242,32 @@ def generate_answer(user_question: str, unified_json: Dict[str, Any]) -> str:
 
     response = llm.invoke(messages)
 
-    # langchain-google-genai may return either a plain string or a list of
-    # content parts (e.g. [{"type": "text", "text": "..."}]). Normalize to
-    # a single markdown string so the frontend parser can work consistently.
+    # langchain-google-genai may return either:
+    # - a plain string
+    # - a list of content parts (e.g. [{"type": "text", "text": "..."}] or Pydantic objects)
+    # Normalize to a single markdown string so the frontend can always render it.
     content = response.content
+
+    def _part_to_text(part: Any) -> str:
+        # Dict shape: {"type": "text", "text": "..."}
+        if isinstance(part, dict):
+            if part.get("type") == "text" and "text" in part:
+                return str(part.get("text", ""))
+            # Fallback to stringified dict
+            return json.dumps(part, ensure_ascii=False)
+
+        # Object with attributes .type and .text (common in Google GenAI SDK)
+        if hasattr(part, "type") and getattr(part, "type") == "text" and hasattr(part, "text"):
+            return str(getattr(part, "text"))
+
+        # Generic fallback
+        return str(part)
+
     if isinstance(content, list):
-        parts = []
-        for part in content:
-            if isinstance(part, dict) and part.get("type") == "text":
-                parts.append(part.get("text", ""))
-            else:
-                # Fallback: stringify any unknown part
-                parts.append(str(part))
+        parts = [_part_to_text(p) for p in content]
         content = "\n\n".join(p for p in parts if p)
 
-    return content
+    return str(content)
 
 
 def run_insight_pipeline(user_question: str) -> Dict[str, Any]:
