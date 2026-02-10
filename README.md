@@ -76,7 +76,7 @@ Then open the URL printed in the terminal (usually `http://localhost:8501`) in y
 - The SQL guardrail is intentionally strict: only `SELECT` queries are allowed; anything else returns an error row in the JSON.
 - The visualization logic in `app.py` is intentionally simple (first categorical vs first numeric column). You can replace it with richer, domain-specific charts using your preferred JS graph library, consuming the `response_json` structure.
 
-### Concept responses (Round 1)
+<!-- ### Concept responses (Round 1)
 
 **Q1) In your own words, explain what this problem is asking you to build and what kind of insights a leadership-level user should be able to obtain from your system.**
 
@@ -110,4 +110,4 @@ We deliberately stay within descriptive and comparative analytics over the provi
 **Q7) Briefly describe how your team plans to divide work and execute the solution if shortlisted.**
 
 We plan to split execution into three tightly coupled tracks: (1) data and query layer, responsible for modelling the schema in DuckDB, validating distributions, and designing the key aggregation patterns; (2) orchestration and language layer, responsible for LangChain prompt design, LLM task planning, SQL generation, and unified JSON contracts; and (3) experience and delivery layer, responsible for the Streamlit interface, visualization wiring, deployment, and documentation. We iterate end-to-end on a small set of priority leadership questions, then expand coverage while keeping the same pipeline structure and contracts, while in parallel improving the presentation layer (richer visuals, clearer layouts) and optimising the orchestration so that request-to-response time stays low even as query complexity grows.
-
+ -->
