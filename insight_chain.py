@@ -95,6 +95,8 @@ def plan_tasks(user_question: str) -> List[TaskPlanItem]:
             "- Only SELECT queries are allowed.\n"
             "- Do NOT use DDL or DML (no CREATE, INSERT, UPDATE, DELETE, DROP, etc.).\n"
             "- Use column names exactly as described.\n"
+            "- When filtering by transaction_status, ONLY use the exact values 'SUCCESS' or 'FAILED' (uppercase).\n"
+            "- When filtering by transaction_type, ONLY use the exact values 'P2P', 'P2M', 'Bill Payment', or 'Recharge'.\n"
             "- If you filter on categorical columns, only use valid values from the schema.\n"
             "- Make sure queries are syntactically valid DuckDB SQL.\n"
             "- If the question is already simple, you may return just 1 task.\n\n"
