@@ -76,7 +76,7 @@ with st.sidebar:
         """
         **Pipeline**:
 
-        1. User prompt + `schema.txt` → **LangChain-powered LLM Task Planner**  
+        1. User prompt + `schema` → **LangChain-powered LLM Task Planner**  
            A LangChain `PromptTemplate` + `ChatGoogleGenerativeAI` chain conditions the LLM on the natural-language question and the full dataset schema, and materializes an explicit *task graph* of analytical intents (each with `task_name`, `task_description`, and a targeted objective).
 
         2. Task graph → **LLM-to-SQL semantic translation**  
@@ -86,7 +86,7 @@ with st.sidebar:
            The application executes the generated SQL via DuckDB, then normalizes all result sets into a single, strongly-typed unified JSON envelope (one node per task with metadata + row-level payload). This structure is the canonical data contract between the query engine, LangChain flows, and the visualization layer.
 
         4. Unified JSON + original prompt → **LLM Insight Generation Chain**  
-           A second LangChain conversation (LLM + system prompt) consumes both the original leadership question and the unified JSON to synthesize an explainable, narrative-style answer, strictly grounded in the computed metrics and aligned with the explainability requirements in `schema.txt`.
+           A second LangChain conversation (LLM + system prompt) consumes both the original leadership question and the unified JSON to synthesize an explainable, narrative-style answer, strictly grounded in the computed metrics and aligned with the explainability requirements.
 
         5. Frontend / UX layer  
            The Streamlit UI exposes three synchronized facets of the same LangChain pipeline:
