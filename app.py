@@ -56,6 +56,152 @@ def _split_markdown_sections(text: str):
     return sections
 
 
+def _pick_metric_column(numeric_cols):
+    """
+    Choose a "best" metric column from a list of numeric column names.
+    Preference is given to rate/percentage-style metrics, then counts, then
+    generic numeric fields.
+    """
+    preferred_order = [
+        "success_rate_percentage",
+        "failed_rate_percentage",
+        "flagged_percentage",
+        "flagged_rate",
+        "failure_rate",
+        "failed_transactions",
+        "successful_transactions",
+        "total_transactions",
+        "amount_inr",
+    ]
+    for name in preferred_order:
+        if name in numeric_cols:
+            return name
+    return numeric_cols[0] if numeric_cols else None
+
+
+def _render_task_summary(df: pd.DataFrame, task_name: str):
+    """
+    Render small KPI-style highlights for a task:
+    - total of the main metric
+    - top segment (if categorical present)
+    - number of groups / rows
+    """
+    if df.empty:
+        return
+
+    numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
+    if not numeric_cols:
+        return
+
+    y_col = _pick_metric_column(numeric_cols)
+    if not y_col:
+        return
+
+    total_val = df[y_col].sum()
+    top_row = df.sort_values(y_col, ascending=False).iloc[0]
+
+    categorical_cols = [c for c in df.columns if df[c].dtype == "object" and c != "error"]
+    top_label = None
+    if categorical_cols:
+        top_label = f"{categorical_cols[0]} = {top_row[categorical_cols[0]]}"
+
+    col1, col2, col3 = st.columns(3)
+
+    def _fmt(v):
+        if pd.isna(v):
+            return "-"
+        if float(v).is_integer():
+            return f"{int(v):,}"
+        return f"{float(v):,.2f}"
+
+    with col1:
+        st.metric(label=f"Total {y_col}", value=_fmt(total_val))
+
+    with col2:
+        if top_label is not None:
+            st.metric(label=f"Top segment by {y_col}", value=_fmt(top_row[y_col]), delta=top_label)
+        else:
+            st.metric(label=f"Max {y_col}", value=_fmt(top_row[y_col]))
+
+    with col3:
+        st.metric(label="Groups / rows", value=str(len(df)))
+
+
+def _render_task_chart(df: pd.DataFrame, task_name: str):
+    """
+    Heuristic visualisation helper:
+    - If we have a time-like axis (hour_of_day or day_of_week), use a line/bar chart over that.
+    - If we have two categorical axes and a metric, use a heatmap.
+    - Otherwise, fall back to a categorical vs numeric bar chart.
+    """
+    if df.empty:
+        return
+
+    numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
+    categorical_cols = [c for c in df.columns if df[c].dtype == "object" and c != "error"]
+
+    if not numeric_cols:
+        st.info("No numeric columns available for charting; showing table only.")
+        return
+
+    y_col = _pick_metric_column(numeric_cols)
+
+    # Special handling for hour_of_day
+    if "hour_of_day" in df.columns and y_col:
+        fig = px.line(
+            df.sort_values("hour_of_day"),
+            x="hour_of_day",
+            y=y_col,
+            markers=True,
+            title=f"{task_name} – {y_col} by hour of day",
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        return
+
+    # Special handling for day_of_week ordering
+    if "day_of_week" in df.columns and y_col:
+        order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        if set(df["day_of_week"]).issubset(set(order)):
+            df = df.copy()
+            df["day_of_week"] = pd.Categorical(df["day_of_week"], categories=order, ordered=True)
+        fig = px.bar(
+            df.sort_values("day_of_week"),
+            x="day_of_week",
+            y=y_col,
+            title=f"{task_name} – {y_col} by day of week",
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        return
+
+    # If we have two categorical columns and one metric, show a heatmap
+    if len(categorical_cols) >= 2 and y_col:
+        x_col, y_cat = categorical_cols[0], categorical_cols[1]
+        fig = px.density_heatmap(
+            df,
+            x=x_col,
+            y=y_cat,
+            z=y_col,
+            color_continuous_scale="Blues",
+            title=f"{task_name} – {y_col} heatmap by {x_col} and {y_cat}",
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        return
+
+    # Generic categorical vs numeric bar chart
+    if categorical_cols and y_col:
+        x_col = categorical_cols[0]
+        fig = px.bar(
+            df,
+            x=x_col,
+            y=y_col,
+            title=f"{task_name} – {x_col} vs {y_col}",
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        return
+
+    # Fallback: no suitable chart, table only
+    st.info("Could not infer a meaningful chart for this task; showing table only.")
+
 st.set_page_config(
     page_title="InsightX Conversational Analytics",
     page_icon="📊",
@@ -123,36 +269,23 @@ if st.button("Run analysis") and user_question.strip():
             answer = str(answer)
         st.markdown(answer)
 
-        st.subheader("Visualizations (auto-generated from first task, if possible)")
+        st.subheader("Visualizations")
         if not tasks:
             st.info("No tasks found in response JSON.")
         else:
-            first_task = tasks[0]
-            rows = first_task.get("rows", [])
-            if not rows:
-                st.info("First task has no rows to visualize.")
-            else:
-                df = pd.DataFrame(rows)
+            tabs = st.tabs([f"{idx+1}. {t.get('task_name', 'Task')}" for idx, t in enumerate(tasks)])
+            for idx, (tab, t) in enumerate(zip(tabs, tasks), start=1):
+                with tab:
+                    task_name = t.get("task_name") or f"Task {idx}"
+                    rows = t.get("rows", [])
+                    if not rows:
+                        st.caption("No result rows returned for this task.")
+                        continue
 
-                # Try to infer a simple visualization:
-                # - If there is a categorical column and a numeric column, build a bar chart.
-                # - Otherwise, just show the table.
-                categorical_cols = [
-                    c for c in df.columns if df[c].dtype == "object" and c != "error"
-                ]
-                numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
-
-                if categorical_cols and numeric_cols:
-                    x_col = categorical_cols[0]
-                    y_col = numeric_cols[0]
-                    fig = px.bar(df, x=x_col, y=y_col, title=f"{x_col} vs {y_col}")
-                    st.plotly_chart(fig, use_container_width=True)
-                else:
-                    st.info(
-                        "Could not infer a chart (no clear categorical + numeric columns). "
-                        "Showing raw table instead."
-                    )
-                st.dataframe(df)
+                    df = pd.DataFrame(rows)
+                    _render_task_summary(df, task_name)
+                    _render_task_chart(df, task_name)
+                    st.dataframe(df, use_container_width=True)
 
     with col_right:
         st.subheader("Analysis breakdown")

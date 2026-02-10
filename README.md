@@ -72,9 +72,12 @@ Then open the URL printed in the terminal (usually `http://localhost:8501`) in y
 
 ### Notes
 
-- The LLM model name defaults to `gemini-3-pro-preview`, but you can override it by setting `GEMINI_MODEL_NAME` in `.env`.
-- The SQL guardrail is intentionally strict: only `SELECT` queries are allowed; anything else returns an error row in the JSON.
-- The visualization logic in `app.py` is intentionally simple (first categorical vs first numeric column). You can replace it with richer, domain-specific charts using your preferred JS graph library, consuming the `response_json` structure.
+<!-- - The LLM model name defaults to `gemini-3-pro-preview`, but you can override it by setting `GEMINI_MODEL_NAME` in `.env`. -->
+- The SQL guardrail is intentionally strict: only `SELECT` queries are allowed; anything else is strictly forbidden and returns an error row in the JSON.
+- The visualization logic in `app.py` now renders **per-task Plotly charts** driven directly from the `response_json` structure:
+  - Line or bar charts over `hour_of_day` and `day_of_week` when present.
+  - Categorical vs metric bar charts for segments like `transaction_type`, `device_type`, `network_type`, `sender_bank`, or `merchant_category`.
+  - A tabbed layout that shows one chart + table per analysis task, making it easy to plug in or mirror the same JSON into any external JS graph library if needed.
 
 <!-- ### Concept responses (Round 1)
 
