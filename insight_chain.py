@@ -1,5 +1,6 @@
 import hashlib
 import json
+import logging
 import os
 import datetime
 from dataclasses import dataclass
@@ -23,6 +24,8 @@ GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "gemini-3-pro-preview")
 # Redis caching configuration
 REDIS_URL = os.getenv("REDIS_URL")
 REDIS_CACHE_TTL = int(os.getenv("REDIS_CACHE_TTL", "21600"))  # Default 6 hours
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -283,17 +286,18 @@ def _get_redis_client():
     Handles connection errors gracefully.
     """
     if not REDIS_URL:
+        logger.info("Redis cache disabled: REDIS_URL not set")
         return None
 
     try:
         import redis
 
         client = redis.from_url(REDIS_URL, decode_responses=False)
-        # Test connection
         client.ping()
+        logger.info("Redis cache enabled: connected successfully")
         return client
-    except Exception:  # noqa: BLE001
-        # Redis not available or connection failed; proceed without cache
+    except Exception as e:  # noqa: BLE001
+        logger.warning("Redis cache disabled: connection failed - %s", e)
         return None
 
 
@@ -323,17 +327,20 @@ def run_insight_pipeline(user_question: str) -> Dict[str, Any]:
     }
     """
     redis_client = _get_redis_client()
+    cache_key = _cache_key(user_question)
 
     # Try cache lookup
     if redis_client:
-        cache_key = _cache_key(user_question)
         try:
             cached = redis_client.get(cache_key)
             if cached:
+                logger.info("Cache HIT key=%s question=%r", cache_key, user_question[:60] + ("..." if len(user_question) > 60 else ""))
                 return json.loads(cached)
-        except Exception:  # noqa: BLE001
-            # Cache read failed; proceed with normal pipeline
+        except Exception as e:  # noqa: BLE001
+            logger.warning("Cache read failed, running pipeline: %s", e)
             pass
+
+    logger.info("Cache MISS key=%s question=%r", cache_key, user_question[:60] + ("..." if len(user_question) > 60 else ""))
 
     # Cache miss or Redis unavailable: run the pipeline
     df = load_transactions_df()
@@ -348,16 +355,15 @@ def run_insight_pipeline(user_question: str) -> Dict[str, Any]:
 
     # Store in cache if Redis is available
     if redis_client:
-        cache_key = _cache_key(user_question)
         try:
             redis_client.setex(
                 cache_key,
                 REDIS_CACHE_TTL,
                 json.dumps(result, ensure_ascii=False),
             )
-        except Exception:  # noqa: BLE001
-            # Cache write failed; result still returned
-            pass
+            logger.info("Cache SET key=%s ttl=%ds", cache_key, REDIS_CACHE_TTL)
+        except Exception as e:  # noqa: BLE001
+            logger.warning("Cache write failed: %s", e)
 
     return result
 
