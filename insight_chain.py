@@ -153,8 +153,13 @@ def execute_tasks(tasks: List[TaskPlanItem], df: pd.DataFrame) -> Dict[str, Any]
     for t in tasks:
         sql = t.sql_query.strip()
 
-        # Simple guardrail: only allow SELECT queries.
-        if not sql.lower().lstrip().startswith("select"):
+        # Simple guardrail: only allow read-only queries.
+        normalized = sql.lower().lstrip()
+        # Block obvious write / DDL operations
+        forbidden_prefixes = ("insert", "update", "delete", "drop", "create", "alter")
+        if not (normalized.startswith("select") or normalized.startswith("with")) or normalized.startswith(
+            forbidden_prefixes
+        ):
             rows: List[Dict[str, Any]] = [
                 {
                     "error": "Only SELECT queries are allowed.",
@@ -199,7 +204,7 @@ def generate_answer(user_question: str, unified_json: Dict[str, Any]) -> str:
     """
     Second LLM call:
     - Takes the original question + unified JSON with task-level results
-    - Produces a leadership-ready, explainable answer.
+    - Produces a leadership-ready, explainable answer using Markdown sections.
     """
     llm = _make_llm(temperature=0.2)
 
@@ -215,8 +220,12 @@ def generate_answer(user_question: str, unified_json: Dict[str, Any]) -> str:
         "- Provide clear, explainable reasoning behind conclusions.\n"
         "- Highlight key statistics and trends.\n"
         "- Where appropriate, add 1-3 concise recommendations.\n\n"
-        "Do NOT output JSON. Respond in natural language paragraphs, suitable for\n"
-        "a senior product/operations/marketing/risk leader.\n"
+        "Respond in well-structured natural language using Markdown formatting:\n"
+        "- Start with a short overview paragraph.\n"
+        "- Use bold section headings (e.g., **Volume vs. Value Volatility**, **Reliability**, **Recommendations**)\n"
+        "  where appropriate.\n"
+        "- Use bullet points for lists.\n"
+        "Do NOT output JSON.\n"
     )
 
     messages = [
@@ -226,13 +235,28 @@ def generate_answer(user_question: str, unified_json: Dict[str, Any]) -> str:
                 f"User question:\n{user_question}\n\n"
                 "Analysis JSON (from previous step):\n"
                 f"{json.dumps(unified_json, indent=2)}\n\n"
-                "Now provide the final, well-structured answer."
+                "Now provide the final, well-structured Markdown answer."
             )
         ),
     ]
 
     response = llm.invoke(messages)
-    return response.content
+
+    # langchain-google-genai may return either a plain string or a list of
+    # content parts (e.g. [{"type": "text", "text": "..."}]). Normalize to
+    # a single markdown string so the frontend parser can work consistently.
+    content = response.content
+    if isinstance(content, list):
+        parts = []
+        for part in content:
+            if isinstance(part, dict) and part.get("type") == "text":
+                parts.append(part.get("text", ""))
+            else:
+                # Fallback: stringify any unknown part
+                parts.append(str(part))
+        content = "\n\n".join(p for p in parts if p)
+
+    return content
 
 
 def run_insight_pipeline(user_question: str) -> Dict[str, Any]:

@@ -7,6 +7,55 @@ import streamlit as st
 from insight_chain import run_insight_pipeline
 
 
+def _split_markdown_sections(text: str):
+    """
+    Lightweight parser to turn a markdown answer into (title, body) sections.
+
+    It treats either:
+    - Bold-only lines like **Title**, or
+    - Markdown headings like # Title / ## Title / ### Title
+
+    as section boundaries. The part before the first header is treated as an
+    'Overview' section.
+    """
+    lines = text.splitlines()
+    sections = []
+    current_title = "Overview"
+    current_lines = []
+
+    for line in lines:
+        stripped = line.strip()
+
+        is_bold_header = (
+            stripped.startswith("**")
+            and stripped.endswith("**")
+            and len(stripped) > 4
+        )
+        is_md_header = stripped.startswith("#")
+
+        if is_bold_header or is_md_header:
+            # Flush previous section
+            if current_lines:
+                sections.append((current_title, "\n".join(current_lines).strip()))
+
+            if is_bold_header:
+                # Remove surrounding ** markers
+                header_text = stripped.strip("* ").strip()
+            else:
+                # Remove leading #'s and surrounding whitespace
+                header_text = stripped.lstrip("#").strip()
+
+            current_title = header_text or current_title
+            current_lines = []
+        else:
+            current_lines.append(line)
+
+    if current_lines:
+        sections.append((current_title, "\n".join(current_lines).strip()))
+
+    return sections
+
+
 st.set_page_config(
     page_title="InsightX Conversational Analytics",
     page_icon="📊",
@@ -27,14 +76,23 @@ with st.sidebar:
         """
         **Pipeline**:
 
-        1. Your question + schema → Gemini (task planner)
-        2. Gemini outputs analysis tasks + SQL queries
-        3. SQL runs on `dataset.csv` via DuckDB
-        4. Unified JSON of results → Gemini (answer generator)
-        5. You see:
-           - Natural language answer
-           - Visuals
-           - Raw response JSON
+        1. User prompt + `schema.txt` → **LangChain-powered LLM Task Planner**  
+           A LangChain `PromptTemplate` + `ChatGoogleGenerativeAI` chain conditions the LLM on the natural-language question and the full dataset schema, and materializes an explicit *task graph* of analytical intents (each with `task_name`, `task_description`, and a targeted objective).
+
+        2. Task graph → **LLM-to-SQL semantic translation**  
+           A LangChain JSON-output chain converts each task into a parameterized, read-only SQL query over the DuckDB-backed `transactions` relation (sourced from `dataset.csv`), encoding all filters, group-bys, windowing, and aggregation logic directly in SQL.
+
+        3. DuckDB execution → **LangChain-normalized unified response JSON**  
+           The application executes the generated SQL via DuckDB, then normalizes all result sets into a single, strongly-typed unified JSON envelope (one node per task with metadata + row-level payload). This structure is the canonical data contract between the query engine, LangChain flows, and the visualization layer.
+
+        4. Unified JSON + original prompt → **LLM Insight Generation Chain**  
+           A second LangChain conversation (LLM + system prompt) consumes both the original leadership question and the unified JSON to synthesize an explainable, narrative-style answer, strictly grounded in the computed metrics and aligned with the explainability requirements in `schema.txt`.
+
+        5. Frontend / UX layer  
+           The Streamlit UI exposes three synchronized facets of the same LangChain pipeline:
+           - **Natural language output** – the final LLM-generated insight layer  
+           - **Visuals** – Plotly-based charts/tables driven by the unified JSON and ready to be swapped for any graphing library  
+           - **Response JSON** – the low-level machine-readable contract suitable for downstream services, dashboards, or further LangChain tooling
         """
     )
 
@@ -60,7 +118,10 @@ if st.button("Run analysis") and user_question.strip():
 
     with col_left:
         st.subheader("Natural language insight")
-        st.write(answer)
+        # Render markdown as-is, similar to GitHub's markdown rendering
+        if not isinstance(answer, str):
+            answer = str(answer)
+        st.markdown(answer)
 
         st.subheader("Visualizations (auto-generated from first task, if possible)")
         if not tasks:
