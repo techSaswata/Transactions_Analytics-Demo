@@ -213,7 +213,7 @@ st.caption(
     "Ask natural language questions on top of the digital payments dataset. "
     "Behind the scenes, a LangChain-driven orchestration layer decomposes your prompt into analysis tasks, "
     "generates SQL over a DuckDB-backed `transactions` table, aggregates the results into a unified JSON contract, "
-    "and then renders explainable insights (e.g. *Which hours of the day have the highest P2P transaction count and highest total P2P value, and how do their failure rates compare?*)"
+    "and then renders explainable insights (e.g. Ask anything like: *Which hours of the day have the highest P2P transaction count and highest total P2P value, and how do their failure rates compare?*)"
 )
 
 
@@ -244,7 +244,7 @@ with st.sidebar:
     )
 
 user_question = st.text_area(
-    # "Ask a question about the transactions ",
+    "",
     height=100,
 )
 
