@@ -1,8 +1,9 @@
+import hashlib
 import json
 import os
 import datetime
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import duckdb
 import pandas as pd
@@ -18,6 +19,10 @@ load_dotenv()
 
 # Default to Gemini 3 Pro preview; can be overridden via GEMINI_MODEL_NAME in .env
 GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "gemini-3-pro-preview")
+
+# Redis caching configuration
+REDIS_URL = os.getenv("REDIS_URL")
+REDIS_CACHE_TTL = int(os.getenv("REDIS_CACHE_TTL", "21600"))  # Default 6 hours
 
 
 @dataclass
@@ -272,12 +277,44 @@ def generate_answer(user_question: str, unified_json: Dict[str, Any]) -> str:
     return str(content)
 
 
+def _get_redis_client():
+    """
+    Returns a Redis client if REDIS_URL is configured, None otherwise.
+    Handles connection errors gracefully.
+    """
+    if not REDIS_URL:
+        return None
+
+    try:
+        import redis
+
+        client = redis.from_url(REDIS_URL, decode_responses=False)
+        # Test connection
+        client.ping()
+        return client
+    except Exception:  # noqa: BLE001
+        # Redis not available or connection failed; proceed without cache
+        return None
+
+
+def _cache_key(question: str) -> str:
+    """
+    Generate a deterministic cache key from a normalized question.
+    """
+    normalized = question.strip().lower()
+    hash_digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+    return f"insightx:cache:{hash_digest}"
+
+
 def run_insight_pipeline(user_question: str) -> Dict[str, Any]:
     """
-    End-to-end pipeline:
-      user prompt -> (schema-aware task planner LLM) -> SQL per task
-      -> DuckDB execution over dataset.csv -> unified JSON
-      -> answer-generation LLM -> natural language answer
+    End-to-end pipeline with Redis caching:
+      user prompt -> (check Redis cache) -> if miss:
+        -> (schema-aware task planner LLM) -> SQL per task
+        -> DuckDB execution over dataset.csv -> unified JSON
+        -> answer-generation LLM -> natural language answer
+        -> (store in Redis cache)
+      -> return result
 
     Returns:
     {
@@ -285,13 +322,42 @@ def run_insight_pipeline(user_question: str) -> Dict[str, Any]:
       "response_json": { ... unified JSON ... }
     }
     """
+    redis_client = _get_redis_client()
+
+    # Try cache lookup
+    if redis_client:
+        cache_key = _cache_key(user_question)
+        try:
+            cached = redis_client.get(cache_key)
+            if cached:
+                return json.loads(cached)
+        except Exception:  # noqa: BLE001
+            # Cache read failed; proceed with normal pipeline
+            pass
+
+    # Cache miss or Redis unavailable: run the pipeline
     df = load_transactions_df()
     tasks = plan_tasks(user_question)
     unified_json = execute_tasks(tasks, df)
     answer = generate_answer(user_question, unified_json)
 
-    return {
+    result = {
         "answer": answer,
         "response_json": unified_json,
     }
+
+    # Store in cache if Redis is available
+    if redis_client:
+        cache_key = _cache_key(user_question)
+        try:
+            redis_client.setex(
+                cache_key,
+                REDIS_CACHE_TTL,
+                json.dumps(result, ensure_ascii=False),
+            )
+        except Exception:  # noqa: BLE001
+            # Cache write failed; result still returned
+            pass
+
+    return result
 
