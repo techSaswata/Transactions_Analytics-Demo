@@ -1,5 +1,6 @@
 import json
 import os
+import datetime
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
@@ -165,12 +166,13 @@ def execute_tasks(tasks: List[TaskPlanItem], df: pd.DataFrame) -> Dict[str, Any]
                 result_df = con.execute(sql).df()
 
                 # Ensure all values are JSON-serializable (e.g. convert timestamps to strings)
-                datetime_cols = result_df.select_dtypes(
-                    include=["datetime64[ns]", "datetime64[ns, tz]"]
-                ).columns
-                for col in datetime_cols:
-                    # Use a consistent, human-readable format
-                    result_df[col] = result_df[col].dt.strftime("%Y-%m-%d %H:%M:%S")
+                def _to_jsonable(v: Any) -> Any:
+                    if isinstance(v, (pd.Timestamp, datetime.datetime, datetime.date)):
+                        # ISO format is safe for both LLM and frontend
+                        return v.isoformat()
+                    return v
+
+                result_df = result_df.map(_to_jsonable)
 
                 rows = result_df.to_dict(orient="records")
             except Exception as e:  # noqa: BLE001
