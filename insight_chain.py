@@ -163,6 +163,15 @@ def execute_tasks(tasks: List[TaskPlanItem], df: pd.DataFrame) -> Dict[str, Any]
         else:
             try:
                 result_df = con.execute(sql).df()
+
+                # Ensure all values are JSON-serializable (e.g. convert timestamps to strings)
+                datetime_cols = result_df.select_dtypes(
+                    include=["datetime64[ns]", "datetime64[ns, tz]"]
+                ).columns
+                for col in datetime_cols:
+                    # Use a consistent, human-readable format
+                    result_df[col] = result_df[col].dt.strftime("%Y-%m-%d %H:%M:%S")
+
                 rows = result_df.to_dict(orient="records")
             except Exception as e:  # noqa: BLE001
                 rows = [
