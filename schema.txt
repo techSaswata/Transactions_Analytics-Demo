@@ -1,0 +1,109 @@
+InsightX Transaction Dataset Schema
+===================================
+
+1. Context
+----------
+
+We work with a synthetic dataset of digital payment transactions designed to mimic a real-world UPI / wallet ecosystem in India. Each row represents a single transaction between a sender and a receiver (or a sender and a merchant).
+
+Our system uses this schema to:
+- Translate leadership questions into analysis tasks
+- Generate SQL over a `transactions` table
+- Compute aggregates and segment-level metrics
+- Produce conversational narrative insights and visuals
+
+2. Column Definitions
+---------------------
+
+transaction_id  
+- Unique identifier for each transaction.
+
+timestamp  
+- Date and time of the transaction in `YYYY-MM-DD HH:MM:SS` format.
+
+transaction_type  
+- Type of transaction. Allowed values:  
+  - `P2P`  (Person-to-Person)  
+  - `P2M`  (Person-to-Merchant)  
+  - `Bill Payment`  
+  - `Recharge`
+
+merchant_category  
+- Category for `P2M` and `Bill Payment` transactions. Examples:  
+  - `Food`, `Grocery`, `Fuel`, `Entertainment`, `Shopping`, `Healthcare`,  
+    `Education`, `Transport`, `Utilities`, `Other`  
+- `NULL` for `P2P` and `Recharge` transactions.
+
+amount_inr  
+- Transaction amount in Indian Rupees (numeric).
+
+transaction_status  
+- Final transaction status. Allowed values (UPPERCASE):  
+  - `SUCCESS`  
+  - `FAILED`
+
+sender_age_group  
+- Age group of the sender. Allowed values:  
+  - `18-25`, `26-35`, `36-45`, `46-55`, `56+`
+
+receiver_age_group  
+- Age group of the receiver; only applicable for `P2P` transactions.  
+- `NULL` for non-`P2P` transactions.
+
+sender_state  
+- Indian state of the sender (e.g., `Maharashtra`, `Karnataka`, `Delhi`, etc.).
+
+sender_bank  
+- Sender's bank. Allowed values:  
+  - `SBI`, `HDFC`, `ICICI`, `Axis`, `PNB`, `Kotak`, `IndusInd`, `Yes Bank`
+
+receiver_bank  
+- Receiver's bank (same allowed values as `sender_bank`).
+
+device_type  
+- Device used by the sender. Allowed values:  
+  - `Android`, `iOS`, `Web`
+
+network_type  
+- Network connection type. Allowed values:  
+  - `4G`, `5G`, `WiFi`, `3G`
+
+fraud_flag  
+- Binary indicator:  
+  - `0` = not flagged  
+  - `1` = flagged for review  
+- This represents automated flags for manual review, **not** confirmed fraud.
+
+hour_of_day  
+- Integer hour of the transaction (0–23), derived from `timestamp`.
+
+day_of_week  
+- Day of the week derived from `timestamp`. Allowed values:  
+  - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`
+
+is_weekend  
+- Binary indicator:  
+  - `0` = weekday (Monday–Friday)  
+  - `1` = weekend (Saturday–Sunday)
+
+3. Derived-Field Notes
+----------------------
+
+- `hour_of_day`, `day_of_week`, and `is_weekend` are pre-computed from `timestamp` and should be treated as consistent with it.
+- `merchant_category` is `NULL` for `P2P` and `Recharge` transactions and should not be used for segmenting those types.
+- `receiver_age_group` is only meaningful for `P2P` transactions.
+
+4. Analytics Guidance
+----------------------
+
+Our pipeline expects queries to:
+- Treat `transaction_status` as an enum with exact values `SUCCESS` and `FAILED`.
+- Treat `transaction_type` as an enum with exact values `P2P`, `P2M`, `Bill Payment`, and `Recharge`.
+- Use `fraud_flag = 1` strictly as “flagged for review”, not “fraud confirmed”.
+- Use `amount_inr` for value-based analysis (e.g., total value, high-value deciles).
+
+Typical aggregations:
+- Volume and value by `hour_of_day`, `day_of_week`, and `is_weekend`
+- Success / failure rates by `transaction_type`, `device_type`, `network_type`, `sender_bank`, `merchant_category`
+- Review-flag rates by value bands, age groups, or states using `fraud_flag`
+
