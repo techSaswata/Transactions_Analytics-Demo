@@ -1,0 +1,101 @@
+transaction_id,timestamp,transaction_type,merchant_category,amount_inr,transaction_status,sender_age_group,receiver_age_group,sender_state,sender_bank,receiver_bank,device_type,network_type,fraud_flag,hour_of_day,day_of_week,is_weekend
+TXN0001,2025-01-01 08:15:00,P2P,,850.50,SUCCESS,26-35,18-25,Maharashtra,HDFC,SBI,Android,4G,0,8,Wednesday,0
+TXN0002,2025-01-01 21:45:00,P2P,,1250.00,FAILED,36-45,26-35,Karnataka,SBI,ICICI,Android,3G,0,21,Wednesday,0
+TXN0003,2025-01-02 09:05:00,P2M,Food,320.00,SUCCESS,18-25,,Delhi,ICICI,HDFC,iOS,4G,0,9,Thursday,0
+TXN0004,2025-01-02 18:30:00,P2M,Grocery,540.75,FAILED,26-35,,Tamil Nadu,Axis,SBI,Android,3G,0,18,Thursday,0
+TXN0005,2025-01-03 11:20:00,Bill Payment,Utilities,2100.00,SUCCESS,36-45,,West Bengal,HDFC,PNB,Web,WiFi,0,11,Friday,0
+TXN0006,2025-01-03 23:10:00,Bill Payment,Utilities,5800.00,FAILED,46-55,,Gujarat,SBI,SBI,Android,3G,1,23,Friday,0
+TXN0007,2025-01-04 10:00:00,P2M,Entertainment,750.00,SUCCESS,18-25,,Maharashtra,Yes Bank,ICICI,Android,4G,0,10,Saturday,1
+TXN0008,2025-01-04 19:50:00,Recharge,Other,199.00,FAILED,26-35,,Karnataka,HDFC,HDFC,Android,3G,0,19,Saturday,1
+TXN0009,2025-01-05 14:25:00,Recharge,Other,399.00,SUCCESS,56+,,Delhi,ICICI,Axis,iOS,4G,0,14,Sunday,1
+TXN0010,2025-01-05 22:40:00,Recharge,Other,99.00,FAILED,18-25,,Tamil Nadu,Axis,PNB,Android,3G,0,22,Sunday,1
+TXN0011,2025-01-06 07:55:00,P2P,,1500.00,SUCCESS,46-55,36-45,West Bengal,PNB,SBI,Android,4G,0,7,Monday,0
+TXN0012,2025-01-06 16:35:00,P2P,,25000.00,SUCCESS,56+,56+,Gujarat,SBI,HDFC,Web,WiFi,1,16,Monday,0
+TXN0013,2025-01-07 12:15:00,P2P,,3200.00,FAILED,26-35,26-35,Uttar Pradesh,HDFC,ICICI,Android,3G,1,12,Tuesday,0
+TXN0014,2025-01-07 20:05:00,P2P,,450.00,FAILED,18-25,18-25,Rajasthan,Axis,Axis,iOS,3G,0,20,Tuesday,0
+TXN0015,2025-01-01 08:15:00,P2M,Fuel,1800.00,SUCCESS,26-35,,Maharashtra,HDFC,IndusInd,Android,4G,0,8,Wednesday,0
+TXN0016,2025-01-01 21:45:00,P2M,Shopping,5200.00,FAILED,36-45,,Karnataka,ICICI,Yes Bank,Android,3G,1,21,Wednesday,0
+TXN0017,2025-01-02 09:05:00,P2M,Healthcare,950.00,SUCCESS,46-55,,Delhi,SBI,SBI,iOS,4G,0,9,Thursday,0
+TXN0018,2025-01-02 18:30:00,P2M,Education,12500.00,SUCCESS,56+,,Tamil Nadu,HDFC,HDFC,Web,WiFi,1,18,Thursday,0
+TXN0019,2025-01-03 11:20:00,P2M,Transport,300.00,SUCCESS,18-25,,West Bengal,Axis,Kotak,Android,4G,0,11,Friday,0
+TXN0020,2025-01-03 23:10:00,P2M,Utilities,430.00,FAILED,26-35,,Gujarat,PNB,PNB,Android,3G,0,23,Friday,0
+TXN0021,2025-01-04 10:00:00,Bill Payment,Utilities,760.00,SUCCESS,36-45,,Maharashtra,Kotak,SBI,Android,4G,0,10,Saturday,1
+TXN0022,2025-01-04 19:50:00,Bill Payment,Utilities,9800.00,SUCCESS,46-55,,Karnataka,SBI,HDFC,Web,WiFi,1,19,Saturday,1
+TXN0023,2025-01-05 14:25:00,Bill Payment,Utilities,15000.00,FAILED,56+,,Delhi,HDFC,ICICI,Android,3G,1,14,Sunday,1
+TXN0024,2025-01-05 22:40:00,Bill Payment,Utilities,4300.00,FAILED,18-25,,Tamil Nadu,Axis,Axis,Android,3G,0,22,Sunday,1
+TXN0025,2025-01-06 07:55:00,Recharge,Other,249.00,SUCCESS,26-35,,West Bengal,Yes Bank,Yes Bank,Android,4G,0,7,Monday,0
+TXN0026,2025-01-06 16:35:00,Recharge,Other,549.00,SUCCESS,36-45,,Gujarat,Kotak,Kotak,Android,4G,0,16,Monday,0
+TXN0027,2025-01-07 12:15:00,Recharge,Other,799.00,FAILED,46-55,,Uttar Pradesh,PNB,PNB,Android,3G,0,12,Tuesday,0
+TXN0028,2025-01-07 20:05:00,Recharge,Other,129.00,FAILED,56+,,Rajasthan,SBI,SBI,iOS,3G,0,20,Tuesday,0
+TXN0029,2025-01-01 08:15:00,P2P,,299.00,SUCCESS,18-25,26-35,Telangana,IndusInd,HDFC,Android,4G,0,8,Wednesday,0
+TXN0030,2025-01-01 21:45:00,P2P,,9999.00,SUCCESS,26-35,36-45,Kerala,Yes Bank,ICICI,Web,WiFi,1,21,Wednesday,0
+TXN0031,2025-01-02 09:05:00,P2P,,75.00,FAILED,36-45,18-25,Maharashtra,HDFC,SBI,Android,3G,0,9,Thursday,0
+TXN0032,2025-01-02 18:30:00,P2P,,640.00,SUCCESS,46-55,26-35,Karnataka,SBI,Axis,Android,4G,0,18,Thursday,0
+TXN0033,2025-01-03 11:20:00,P2P,,5200.00,FAILED,56+,46-55,Delhi,ICICI,PNB,Android,3G,1,11,Friday,0
+TXN0034,2025-01-03 23:10:00,P2P,,1100.00,SUCCESS,18-25,18-25,Tamil Nadu,Axis,HDFC,iOS,5G,0,23,Friday,0
+TXN0035,2025-01-04 10:00:00,P2P,,430.00,SUCCESS,26-35,26-35,West Bengal,PNB,SBI,Android,4G,0,10,Saturday,1
+TXN0036,2025-01-04 19:50:00,P2P,,990.00,FAILED,36-45,36-45,Gujarat,Kotak,ICICI,Android,3G,0,19,Saturday,1
+TXN0037,2025-01-05 14:25:00,P2P,,2500.00,SUCCESS,46-55,56+,Uttar Pradesh,IndusInd,Yes Bank,Android,4G,1,14,Sunday,1
+TXN0038,2025-01-05 22:40:00,P2P,,150.00,FAILED,56+,18-25,Rajasthan,Yes Bank,SBI,Android,3G,0,22,Sunday,1
+TXN0039,2025-01-06 07:55:00,P2M,Food,220.00,SUCCESS,18-25,,Telangana,HDFC,HDFC,Android,4G,0,7,Monday,0
+TXN0040,2025-01-06 16:35:00,P2M,Grocery,650.00,SUCCESS,26-35,,Kerala,SBI,SBI,Web,WiFi,0,16,Monday,0
+TXN0041,2025-01-07 12:15:00,P2M,Entertainment,1200.00,FAILED,36-45,,Maharashtra,ICICI,ICICI,Android,3G,0,12,Tuesday,0
+TXN0042,2025-01-07 20:05:00,P2M,Shopping,3400.00,SUCCESS,46-55,,Karnataka,Axis,Axis,Android,5G,1,20,Tuesday,0
+TXN0043,2025-01-01 08:15:00,P2M,Healthcare,890.00,SUCCESS,56+,,Delhi,PNB,PNB,iOS,4G,0,8,Wednesday,0
+TXN0044,2025-01-01 21:45:00,P2M,Education,6700.00,FAILED,18-25,,Tamil Nadu,Kotak,Kotak,Android,3G,1,21,Wednesday,0
+TXN0045,2025-01-02 09:05:00,P2M,Transport,150.00,SUCCESS,26-35,,West Bengal,IndusInd,IndusInd,Android,4G,0,9,Thursday,0
+TXN0046,2025-01-02 18:30:00,P2M,Utilities,980.00,FAILED,36-45,,Gujarat,Yes Bank,Yes Bank,Android,3G,0,18,Thursday,0
+TXN0047,2025-01-03 11:20:00,P2M,Other,4300.00,SUCCESS,46-55,,Uttar Pradesh,HDFC,HDFC,Android,5G,1,11,Friday,0
+TXN0048,2025-01-03 23:10:00,P2M,Food,2200.00,FAILED,56+,,Rajasthan,SBI,SBI,Android,3G,1,23,Friday,0
+TXN0049,2025-01-04 10:00:00,Bill Payment,Utilities,350.00,SUCCESS,18-25,,Telangana,ICICI,ICICI,Android,4G,0,10,Saturday,1
+TXN0050,2025-01-04 19:50:00,Bill Payment,Utilities,4300.00,SUCCESS,26-35,,Kerala,Axis,Axis,Android,5G,1,19,Saturday,1
+TXN0051,2025-01-05 14:25:00,Bill Payment,Utilities,125.00,FAILED,36-45,,Maharashtra,PNB,PNB,Android,3G,0,14,Sunday,1
+TXN0052,2025-01-05 22:40:00,Bill Payment,Utilities,880.00,FAILED,46-55,,Karnataka,Kotak,Kotak,Web,WiFi,0,22,Sunday,1
+TXN0053,2025-01-06 07:55:00,Bill Payment,Utilities,15200.00,SUCCESS,56+,,Delhi,IndusInd,IndusInd,Android,4G,1,7,Monday,0
+TXN0054,2025-01-06 16:35:00,Bill Payment,Utilities,2300.00,SUCCESS,18-25,,Tamil Nadu,Yes Bank,Yes Bank,Android,4G,0,16,Monday,0
+TXN0055,2025-01-07 12:15:00,Bill Payment,Utilities,4500.00,FAILED,26-35,,West Bengal,HDFC,HDFC,Android,3G,1,12,Tuesday,0
+TXN0056,2025-01-07 20:05:00,Bill Payment,Utilities,670.00,SUCCESS,36-45,,Gujarat,SBI,SBI,iOS,4G,0,20,Tuesday,0
+TXN0057,2025-01-01 08:15:00,Recharge,Other,149.00,SUCCESS,46-55,,Uttar Pradesh,ICICI,ICICI,Android,4G,0,8,Wednesday,0
+TXN0058,2025-01-01 21:45:00,Recharge,Other,349.00,FAILED,56+,,Rajasthan,Axis,Axis,Android,3G,0,21,Wednesday,0
+TXN0059,2025-01-02 09:05:00,Recharge,Other,99.00,SUCCESS,18-25,,Telangana,PNB,PNB,Android,4G,0,9,Thursday,0
+TXN0060,2025-01-02 18:30:00,Recharge,Other,249.00,FAILED,26-35,,Kerala,Kotak,Kotak,Android,3G,0,18,Thursday,0
+TXN0061,2025-01-03 11:20:00,Recharge,Other,799.00,SUCCESS,36-45,,Maharashtra,IndusInd,IndusInd,Android,5G,0,11,Friday,0
+TXN0062,2025-01-03 23:10:00,Recharge,Other,1299.00,FAILED,46-55,,Karnataka,Yes Bank,Yes Bank,Android,3G,0,23,Friday,0
+TXN0063,2025-01-04 10:00:00,Recharge,Other,59.00,SUCCESS,56+,,Delhi,HDFC,HDFC,Android,4G,0,10,Saturday,1
+TXN0064,2025-01-04 19:50:00,Recharge,Other,699.00,SUCCESS,18-25,,Tamil Nadu,SBI,SBI,Android,4G,0,19,Saturday,1
+TXN0065,2025-01-05 14:25:00,Recharge,Other,399.00,FAILED,26-35,,West Bengal,ICICI,ICICI,Android,3G,0,14,Sunday,1
+TXN0066,2025-01-05 22:40:00,Recharge,Other,999.00,FAILED,36-45,,Gujarat,Axis,Axis,Android,3G,0,22,Sunday,1
+TXN0067,2025-01-06 07:55:00,P2P,,6400.00,SUCCESS,46-55,36-45,Uttar Pradesh,PNB,PNB,Android,4G,1,7,Monday,0
+TXN0068,2025-01-06 16:35:00,P2P,,120.00,FAILED,56+,56+,Rajasthan,SBI,SBI,Android,3G,0,16,Monday,0
+TXN0069,2025-01-07 12:15:00,P2P,,980.00,SUCCESS,18-25,26-35,Telangana,ICICI,ICICI,Android,5G,0,12,Tuesday,0
+TXN0070,2025-01-07 20:05:00,P2P,,220.00,FAILED,26-35,18-25,Kerala,Axis,Axis,Android,3G,0,20,Tuesday,0
+TXN0071,2025-01-01 08:15:00,P2P,,3100.00,SUCCESS,36-45,36-45,Maharashtra,PNB,PNB,Web,WiFi,1,8,Wednesday,0
+TXN0072,2025-01-01 21:45:00,P2P,,70.00,FAILED,46-55,46-55,Karnataka,Kotak,Kotak,Android,3G,0,21,Wednesday,0
+TXN0073,2025-01-02 09:05:00,P2P,,450.00,SUCCESS,56+,56+,Delhi,IndusInd,IndusInd,Android,4G,0,9,Thursday,0
+TXN0074,2025-01-02 18:30:00,P2P,,180.00,FAILED,18-25,18-25,Tamil Nadu,Yes Bank,Yes Bank,Android,3G,0,18,Thursday,0
+TXN0075,2025-01-03 11:20:00,P2P,,22500.00,SUCCESS,26-35,26-35,West Bengal,HDFC,HDFC,Android,5G,1,11,Friday,0
+TXN0076,2025-01-03 23:10:00,P2P,,550.00,FAILED,36-45,36-45,Gujarat,SBI,SBI,Android,3G,0,23,Friday,0
+TXN0077,2025-01-04 10:00:00,P2P,,310.00,SUCCESS,46-55,46-55,Uttar Pradesh,ICICI,ICICI,Android,4G,0,10,Saturday,1
+TXN0078,2025-01-04 19:50:00,P2P,,640.00,FAILED,56+,56+,Rajasthan,Axis,Axis,Android,3G,0,19,Saturday,1
+TXN0079,2025-01-05 14:25:00,P2P,,950.00,SUCCESS,18-25,18-25,Telangana,PNB,PNB,Android,4G,0,14,Sunday,1
+TXN0080,2025-01-05 22:40:00,P2P,,129.00,FAILED,26-35,26-35,Kerala,Kotak,Kotak,Android,3G,0,22,Sunday,1
+TXN0081,2025-01-06 07:55:00,P2M,Food,480.00,SUCCESS,36-45,,Maharashtra,IndusInd,IndusInd,Android,4G,0,7,Monday,0
+TXN0082,2025-01-06 16:35:00,P2M,Grocery,1020.00,FAILED,46-55,,Karnataka,Yes Bank,Yes Bank,Android,3G,0,16,Monday,0
+TXN0083,2025-01-07 12:15:00,P2M,Entertainment,2600.00,SUCCESS,56+,,Delhi,HDFC,HDFC,Android,5G,1,12,Tuesday,0
+TXN0084,2025-01-07 20:05:00,P2M,Shopping,7200.00,FAILED,18-25,,Tamil Nadu,SBI,SBI,Android,3G,1,20,Tuesday,0
+TXN0085,2025-01-01 08:15:00,P2M,Healthcare,1450.00,SUCCESS,26-35,,West Bengal,ICICI,ICICI,Android,4G,0,8,Wednesday,0
+TXN0086,2025-01-01 21:45:00,P2M,Education,9800.00,SUCCESS,36-45,,Gujarat,Axis,Axis,Android,5G,1,21,Wednesday,0
+TXN0087,2025-01-02 09:05:00,P2M,Transport,260.00,FAILED,46-55,,Uttar Pradesh,PNB,PNB,Android,3G,0,9,Thursday,0
+TXN0088,2025-01-02 18:30:00,P2M,Utilities,1340.00,SUCCESS,56+,,Rajasthan,Kotak,Kotak,Android,4G,0,18,Thursday,0
+TXN0089,2025-01-03 11:20:00,P2M,Other,580.00,FAILED,18-25,,Telangana,IndusInd,IndusInd,Android,3G,0,11,Friday,0
+TXN0090,2025-01-03 23:10:00,P2M,Food,3250.00,SUCCESS,26-35,,Kerala,Yes Bank,Yes Bank,Android,5G,1,23,Friday,0
+TXN0091,2025-01-04 10:00:00,Bill Payment,Utilities,1999.00,SUCCESS,36-45,,Maharashtra,HDFC,HDFC,Android,4G,0,10,Saturday,1
+TXN0092,2025-01-04 19:50:00,Bill Payment,Utilities,7400.00,FAILED,46-55,,Karnataka,SBI,SBI,Android,3G,1,19,Saturday,1
+TXN0093,2025-01-05 14:25:00,Bill Payment,Utilities,3200.00,SUCCESS,56+,,Delhi,ICICI,ICICI,Android,4G,0,14,Sunday,1
+TXN0094,2025-01-05 22:40:00,Bill Payment,Utilities,560.00,FAILED,18-25,,Tamil Nadu,Axis,Axis,Android,3G,0,22,Sunday,1
+TXN0095,2025-01-06 07:55:00,Recharge,Other,179.00,SUCCESS,26-35,,West Bengal,PNB,PNB,Android,4G,0,7,Monday,0
+TXN0096,2025-01-06 16:35:00,Recharge,Other,349.00,SUCCESS,36-45,,Gujarat,Kotak,Kotak,Android,5G,0,16,Monday,0
+TXN0097,2025-01-07 12:15:00,Recharge,Other,599.00,FAILED,46-55,,Uttar Pradesh,IndusInd,IndusInd,Android,3G,0,12,Tuesday,0
+TXN0098,2025-01-07 20:05:00,Recharge,Other,129.00,FAILED,56+,,Rajasthan,Yes Bank,Yes Bank,Android,3G,0,20,Tuesday,0
+TXN0099,2025-01-01 08:15:00,P2P,,8800.00,SUCCESS,18-25,36-45,Telangana,HDFC,HDFC,Android,5G,1,8,Wednesday,0
+TXN0100,2025-01-01 21:45:00,P2P,,430.00,FAILED,26-35,18-25,Kerala,SBI,SBI,Android,3G,0,21,Wednesday,0

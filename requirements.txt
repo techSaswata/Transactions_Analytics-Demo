@@ -1,0 +1,12 @@
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+langchain-google-genai>=0.3.0
+python-dotenv>=1.0.1
+streamlit>=1.40.0
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+pydantic>=2.8.0
+pandas>=2.2.0
+duckdb>=1.1.0
+plotly>=5.23.0
