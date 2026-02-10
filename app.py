@@ -243,10 +243,10 @@ with st.sidebar:
         """
     )
 
-# user_question = st.text_area(
-#     "Ask a question about the transactions ",
-#     height=100,
-# )
+user_question = st.text_area(
+    # "Ask a question about the transactions ",
+    height=100,
+)
 
 if st.button("Run analysis") and user_question.strip():
     with st.spinner("Thinking with Gemini, planning tasks, and running SQL..."):
