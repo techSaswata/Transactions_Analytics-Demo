@@ -80,7 +80,7 @@ with st.sidebar:
            A LangChain `PromptTemplate` + `ChatGoogleGenerativeAI` chain conditions the LLM on the natural-language question and the full dataset schema, and materializes an explicit *task graph* of analytical intents (each with `task_name`, `task_description`, and a targeted objective).
 
         2. Task graph → **LLM-to-SQL semantic translation**  
-           A LangChain JSON-output chain converts each task into a parameterized, read-only SQL query over the DuckDB-backed `transactions` relation (sourced from `dataset.csv`), encoding all filters, group-bys, windowing, and aggregation logic directly in SQL.
+           A LangChain JSON-output chain converts each task into a parameterized, read-only SQL query over the DuckDB-backed `transactions` relation (sourced from [`dataset.csv`](https://github.com/techSaswata/Transactions_Analytics-Demo/blob/main/dataset.csv)), encoding all filters, group-bys, windowing, and aggregation logic directly in SQL.
 
         3. DuckDB execution → **LangChain-normalized unified response JSON**  
            The application executes the generated SQL via DuckDB, then normalizes all result sets into a single, strongly-typed unified JSON envelope (one node per task with metadata + row-level payload). This structure is the canonical data contract between the query engine, LangChain flows, and the visualization layer.
