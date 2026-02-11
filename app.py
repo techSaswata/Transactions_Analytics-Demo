@@ -210,10 +210,11 @@ st.set_page_config(
 
 st.title("InsightX: Conversational Payments Analytics")
 st.caption(
-    "Ask natural language questions on top of the digital payments dataset. "
-    "Behind the scenes, a LangChain-driven orchestration layer decomposes your prompt into analysis tasks, "
-    "generates SQL over a DuckDB-backed `transactions` table, aggregates the results into a unified JSON contract, "
-    "and then renders explainable insights (e.g. Ask anything like: *Which hours of the day have the highest P2P transaction count and highest total P2P value, and how do their failure rates compare?*)"
+    "Ask natural-language questions over the digital payments dataset. "
+    "Behind the scenes, the pipeline performs cache lookup, schema-conditioned task planning, and LLM-to-SQL compilation "
+    "against a DuckDB-backed `transactions` table, executes the generated SQL, aggregates outputs into a unified JSON contract, "
+    "and synthesizes explainable, metric-grounded insights + plotly visuals "
+    "(e.g. *Which hours of the day have the highest P2P transaction count and highest total P2P value, and how do their failure rates compare?*)"
 )
 
 
@@ -247,7 +248,9 @@ user_question = st.text_area(
 )
 
 if st.button("Run analysis") and user_question.strip():
-    with st.spinner("Thinking with Gemini, planning tasks, and running SQL..."):
+    with st.spinner(
+        "Running pipeline: cache lookup → schema-conditioned task planning → LLM-to-SQL compilation → DuckDB execution → response synthesis..."
+    ):
         try:
             result = run_insight_pipeline(user_question.strip())
         except Exception as e:  # noqa: BLE001
