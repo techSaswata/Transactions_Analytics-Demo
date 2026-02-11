@@ -79,6 +79,12 @@ Then open the URL printed in the terminal (usually `http://localhost:8501`) in y
   - Categorical vs metric bar charts for segments like `transaction_type`, `device_type`, `network_type`, `sender_bank`, or `merchant_category`.
   - A tabbed layout that shows one chart + table per analysis task, making it easy to plug in or mirror the same JSON into any external JS graph library if needed.
 
+### Prototype
+Prototype is deployed at:
+```bash
+https://techsas-analytics.streamlit.app
+```
+
 <!-- ### Concept responses (Round 1)
 
 **Q1) In your own words, explain what this problem is asking you to build and what kind of insights a leadership-level user should be able to obtain from your system.**
