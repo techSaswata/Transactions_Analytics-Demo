@@ -80,10 +80,8 @@ Then open the URL printed in the terminal (usually `http://localhost:8501`) in y
   - A tabbed layout that shows one chart + table per analysis task, making it easy to plug in or mirror the same JSON into any external JS graph library if needed.
 
 ### Prototype
-Prototype is deployed at:
-```bash
-https://techsas-analytics.streamlit.app
-```
+Prototype for testing purposes is deployed at: [https://techsas-analytics.streamlit.app](https://techsas-analytics.streamlit.app)
+
 
 <!-- ### Concept responses (Round 1)
 
