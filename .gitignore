@@ -1,2 +1,4 @@
 .env
 R1_submission.md
+__pycache__/
+*.pyc
