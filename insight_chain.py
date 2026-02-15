@@ -47,15 +47,27 @@ def _make_llm(temperature: float = 0.2) -> ChatGoogleGenerativeAI:
     )
 
 
+# Map dataset.csv header names to schema names (underscore, no spaces/parens)
+# so LLM-generated SQL over the registered "transactions" table matches.
+CSV_TO_SCHEMA_COLUMNS = {
+    "transaction id": "transaction_id",
+    "transaction type": "transaction_type",
+    "amount (INR)": "amount_inr",
+}
+
+
 def load_transactions_df(csv_path: str = "dataset.csv") -> pd.DataFrame:
     """
-    Loads the synthetic transaction dataset.
+    Loads the synthetic transaction dataset and normalizes column names
+    to match schema.txt (so generated SQL uses the same names).
     """
     if not os.path.exists(csv_path):
         raise FileNotFoundError(
             f"Dataset CSV '{csv_path}' not found. Make sure dataset.csv exists in the project root."
         )
-    return pd.read_csv(csv_path)
+    df = pd.read_csv(csv_path)
+    df = df.rename(columns=CSV_TO_SCHEMA_COLUMNS)
+    return df
 
 
 def _schema_text() -> str:
